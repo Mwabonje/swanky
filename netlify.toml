@@ -2,10 +2,19 @@
   command = "npm run build"
   publish = "dist"
 
+[images]
+  remote_images = ["https://.*\\.r2\\.dev/.*", "https://.*\\.supabase\\.co/.*"]
+
 [[headers]]
   for = "/*"
   [headers.values]
     Content-Security-Policy = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;"
+
+[[redirects]]
+  from = "/api/image-proxy"
+  to = "/.netlify/images"
+  status = 200
+  force = true
 
 [[redirects]]
   from = "/api/upload-url"
