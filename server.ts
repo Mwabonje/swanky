@@ -1,9 +1,10 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createServer as createViteServer } from "vite";
+import sharp from "sharp";
 
 async function startServer() {
   const app = express();
@@ -48,6 +49,80 @@ async function startServer() {
   });
 
   // Generate a Pre-signed URL for uploading
+  app.get("/api/image-proxy", async (req, res) => {
+    if (!s3 || !isR2Configured) {
+      return res.status(500).json({ error: "R2 is not configured" });
+    }
+
+    try {
+      const urlStr = req.query.url as string;
+      const width = parseInt(req.query.w as string) || undefined;
+      const height = parseInt(req.query.h as string) || undefined;
+      const quality = parseInt(req.query.q as string) || 80;
+
+      if (!urlStr) {
+         return res.status(400).json({ error: "URL is required" });
+      }
+
+      // Extract filePath from the provided public URL
+      const r2Base = (VITE_R2_PUBLIC_URL || '').replace(/\/$/, "");
+      let key = urlStr;
+      
+      if (key.startsWith(r2Base)) {
+        key = key.substring(r2Base.length);
+      }
+      
+      // Clean up the key: remove leading slashes and any query parameters
+      key = key.split('?')[0];
+      if (key.startsWith('/')) key = key.substring(1);
+
+      // We only support images for resizing. 
+      const getObj = new GetObjectCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key
+      });
+
+      const data = await s3.send(getObj);
+      
+      if (!data.Body) {
+         return res.status(404).json({ error: "Image not found" });
+      }
+      
+      const isWebpOptIn = req.headers.accept?.includes('image/webp');
+      const format = isWebpOptIn ? 'webp' : 'jpeg';
+
+      res.set('Content-Type', `image/${format}`);
+      res.set('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+
+      const byteArray = await data.Body.transformToByteArray();
+      const buffer = Buffer.from(byteArray);
+      
+      let transform = sharp(buffer);
+      
+      if (format === 'webp') {
+          transform = transform.webp({ quality });
+      } else {
+          transform = transform.jpeg({ quality });
+      }
+
+      if (width || height) {
+         transform = transform.resize({ 
+             width, 
+             height, 
+             fit: height ? 'cover' : 'inside', 
+             withoutEnlargement: true 
+         });
+      }
+      
+      const resizedBuffer = await transform.toBuffer();
+      res.send(resizedBuffer);
+
+    } catch (e) {
+      console.error("image proxy error:", e);
+      res.redirect(req.query.url as string);
+    }
+  });
+
   app.post("/api/upload-url", async (req, res) => {
     if (!s3 || !isR2Configured) {
       return res.status(500).json({ error: "R2 is not configured on the server" });

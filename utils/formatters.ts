@@ -49,19 +49,18 @@ export const rewriteUrlToR2 = (url: string) => {
 export const getOptimizedImageUrl = (url: string, width: number = 800, height?: number, quality: number = 70) => {
   if (!url) return '';
   
-  // HOTFIX for Supabase Egress: automatically rewrite old supabase.co URLs to use R2 proxy on the fly!
   try {
     const cleanUrl = rewriteUrlToR2(url);
-    
     const encodedUrl = encodeURIComponent(cleanUrl);
-    // Tell wsrv.nl to cache aggressively for 1 month
-    let wsrvUrl = `https://wsrv.nl/?url=${encodedUrl}&w=${width}&q=${quality}&output=webp&maxage=31d`;
+    
+    // Proxy through our backend to bypass bot protection and resize via Sharp
+    let proxyUrl = `/api/image-proxy?url=${encodedUrl}&w=${width}&q=${quality}`;
     
     if (height) {
-      wsrvUrl += `&h=${height}&fit=cover`;
+      proxyUrl += `&h=${height}`;
     }
     
-    return wsrvUrl;
+    return proxyUrl;
   } catch (e) {
     return url;
   }
