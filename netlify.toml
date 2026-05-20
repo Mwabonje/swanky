@@ -1,0 +1,28 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;"
+
+[[redirects]]
+  from = "/api/upload-url"
+  to = "/.netlify/functions/upload-url"
+  status = 200
+
+[[redirects]]
+  from = "/api/delete-file"
+  to = "/.netlify/functions/delete-file"
+  status = 200
+
+[[redirects]]
+  from = "/api/setup-cors"
+  to = "/.netlify/functions/setup-cors"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
