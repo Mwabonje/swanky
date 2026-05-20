@@ -3,7 +3,7 @@ import { Plus, Eye, EyeOff, Image as ImageIcon, Loader2, Trash2, Heart, Bell, Cl
 import { supabase } from '../services/supabase';
 import { Gallery, ActivityLog } from '../types';
 import { useNavigate } from 'react-router-dom';
-import { getOptimizedImageUrl, formatDate, rewriteUrlToR2 } from '../utils/formatters';
+import { getOptimizedImageUrl, formatDate, getProxiedMediaUrl } from '../utils/formatters';
 
 // Extended interface for dashboard display
 interface DashboardGallery extends Gallery {
@@ -284,7 +284,7 @@ export const Dashboard: React.FC = () => {
                     {gallery.coverUrl ? (
                         gallery.coverType === 'video' ? (
                             <video 
-                                src={rewriteUrlToR2(gallery.coverUrl)} 
+                                src={getProxiedMediaUrl(gallery.coverUrl)} 
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 muted
                                 playsInline
@@ -306,7 +306,7 @@ export const Dashboard: React.FC = () => {
                                 const target = e.target as HTMLImageElement;
                                 if (!target.dataset.retried) {
                                     target.dataset.retried = 'true';
-                                    target.src = rewriteUrlToR2(gallery.coverUrl || '');
+                                    target.src = getProxiedMediaUrl(gallery.coverUrl || '');
                                 }
                             }}
                             />
@@ -400,7 +400,7 @@ export const Dashboard: React.FC = () => {
                         {gallery.coverUrl ? (
                             gallery.coverType === 'video' ? (
                                 <video 
-                                    src={rewriteUrlToR2(gallery.coverUrl)} 
+                                    src={getProxiedMediaUrl(gallery.coverUrl)} 
                                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105"
                                     muted playsInline loop preload="metadata"
                                     onMouseOver={(e) => (e.target as HTMLVideoElement).play().catch(()=> {})}
@@ -418,7 +418,7 @@ export const Dashboard: React.FC = () => {
                                     const target = e.target as HTMLImageElement;
                                     if (!target.dataset.retried) {
                                         target.dataset.retried = 'true';
-                                        target.src = rewriteUrlToR2(gallery.coverUrl || '');
+                                        target.src = getProxiedMediaUrl(gallery.coverUrl || '');
                                     }
                                 }}
                                 />

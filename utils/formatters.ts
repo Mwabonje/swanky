@@ -30,7 +30,7 @@ export const getTimeRemaining = (expiresAt: string) => {
   };
 };
 
-export const rewriteUrlToR2 = (url: string) => {
+export const getCleanR2Url = (url: string) => {
   if (!url) return '';
   let cleanUrl = url.split('?')[0]; 
   
@@ -46,20 +46,30 @@ export const rewriteUrlToR2 = (url: string) => {
   return cleanUrl;
 };
 
+export const getProxiedMediaUrl = (url: string) => {
+  if (!url) return '';
+  try {
+    const cleanUrl = getCleanR2Url(url);
+    const encodedUrl = encodeURIComponent(cleanUrl);
+    return `/api/image-proxy?url=${encodedUrl}`;
+  } catch (e) {
+    return url;
+  }
+};
+
+export const rewriteUrlToR2 = (url: string) => {
+  return getProxiedMediaUrl(url);
+};
+
 export const getOptimizedImageUrl = (url: string, width: number = 800, height?: number, quality: number = 70) => {
   if (!url) return '';
   
   try {
-    const cleanUrl = rewriteUrlToR2(url);
+    const cleanUrl = getCleanR2Url(url);
     const encodedUrl = encodeURIComponent(cleanUrl);
     
-    // In production on Netlify, we return the raw url directly to prevent 404s
-    // since the Cloudflare Public Dev URL might block Netlify's image optimizer.
-    if (import.meta.env.PROD) {
-      return cleanUrl;
-    }
-    
-    // Proxy through our backend for local AI Studio development
+    // Proxy through our backend for local AI Studio development, 
+    // and through Netlify's image optimizer via redirects in production
     let proxyUrl = `/api/image-proxy?url=${encodedUrl}&w=${width}&q=${quality}`;
     
     if (height) {

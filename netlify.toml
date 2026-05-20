@@ -12,7 +12,7 @@
 
 [[redirects]]
   from = "/api/image-proxy"
-  to = "/.netlify/images"
+  to = "/.netlify/functions/image-proxy"
   status = 200
   force = true
 
