@@ -472,19 +472,19 @@ export const ClientGallery: React.FC = () => {
       }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-white"><div className="animate-spin h-8 w-8 border-4 border-slate-900 border-t-transparent rounded-full"></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-zinc-50"><div className="animate-spin h-8 w-8 border-2 border-zinc-900 border-t-transparent rounded-full"></div></div>;
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4 text-center">
-        <div className="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-100 max-w-md w-full">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Clock className="w-8 h-8 text-slate-400" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-50 p-4 text-center">
+        <div className="bg-white p-8 md:p-12 rounded-sm shadow-xl border border-zinc-200 max-w-md w-full">
+            <div className="w-16 h-16 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Clock className="w-8 h-8 text-zinc-400" strokeWidth={1} />
             </div>
-            <h1 className="text-xl font-bold text-slate-900 mb-3">Gallery Unavailable</h1>
-            <p className="text-slate-600 mb-8 leading-relaxed">{error}</p>
+            <h1 className="text-xl font-serif text-zinc-900 mb-3 tracking-wide">Gallery Unavailable</h1>
+            <p className="text-zinc-500 mb-8 leading-relaxed font-light">{error}</p>
             <div className="pt-6 border-t border-slate-100">
-                <p className="text-sm text-slate-400">ProGallery</p>
+                <p className="text-sm border-b-[1px] border-slate-700/50 pb-4 mb-4 tracking-[0.15em] uppercase text-white/50">Swanky Gallery</p>
             </div>
         </div>
       </div>
@@ -517,24 +517,24 @@ export const ClientGallery: React.FC = () => {
   if (viewFilter === 'extras') displayedFiles = files.filter(f => extraSelections.includes(f.id));
 
   return (
-    <div className={`min-h-screen bg-white text-slate-900 select-none ${isSelectionMode ? 'pb-24' : ''}`}>
+    <div className={`min-h-screen bg-zinc-50 text-zinc-900 select-none ${isSelectionMode ? 'pb-24' : ''}`}>
       {/* Header */}
-      <header className="sticky top-0 z-20 shadow-sm transition-all duration-300 bg-white/95 border-b border-slate-100">
+      <header className="sticky top-0 z-20 shadow-sm transition-all duration-300 bg-white/95 border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 py-3 md:py-4 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4">
           <div>
-            <h1 className={`text-lg md:text-xl font-bold flex items-center gap-2 ${isPortfolio ? 'text-slate-900 tracking-widest uppercase font-serif' : 'text-slate-900'}`}>
+            <h1 className={`text-lg md:text-2xl tracking-wide font-serif flex items-center gap-2 text-zinc-900`}>
                 {viewFilter !== 'all' ? (
-                    <button onClick={() => setViewFilter('all')} className="md:hidden mr-1 p-2 -ml-2 text-slate-400">
-                        <ArrowLeft className="w-6 h-6" />
+                    <button onClick={() => setViewFilter('all')} className="md:hidden mr-1 p-2 -ml-2 text-zinc-400">
+                        <ArrowLeft className="w-6 h-6" strokeWidth={1.5} />
                     </button>
                 ) : isPortfolio ? (
-                    <button onClick={() => navigate(`/p/${gallery?.photographer_id}`)} className="mr-1 p-2 -ml-2 text-slate-400 hover:text-slate-900 transition-colors">
-                        <ArrowLeft className="w-6 h-6" />
+                    <button onClick={() => navigate(`/p/${gallery?.photographer_id}`)} className="mr-1 p-2 -ml-2 text-zinc-400 hover:text-zinc-900 transition-colors">
+                        <ArrowLeft className="w-6 h-6" strokeWidth={1.5} />
                     </button>
                 ) : null}
                 {viewFilter === 'selected' ? "My Selection" : viewFilter === 'main' ? "Main Photos" : viewFilter === 'extras' ? "Extra Photos" : gallery?.client_name}
             </h1>
-            <p className={`text-xs md:text-sm flex items-center gap-2 ${isPortfolio ? 'text-slate-500 tracking-[0.2em] uppercase mt-1' : 'text-slate-500'}`}>
+            <p className={`text-[10px] md:text-xs flex items-center gap-2 text-zinc-500 tracking-widest uppercase mt-1`}>
                 {displayedFiles.length} items 
                 {!isPortfolio && (
                     <>

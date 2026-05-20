@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Eye, EyeOff, Image as ImageIcon, Loader2, Trash2, Heart, Bell, Clock, Globe } from 'lucide-react';
+import { Plus, Eye, EyeOff, Image as ImageIcon, Loader2, Trash2, Heart, Bell, Clock, Globe, X } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { Gallery, ActivityLog } from '../types';
 import { useNavigate } from 'react-router-dom';
@@ -244,34 +244,34 @@ export const Dashboard: React.FC = () => {
     <div className="flex flex-col lg:flex-row gap-8">
       {/* Main Content */}
       <div className="flex-1">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10">
             <div>
-               <h1 className="text-2xl font-bold text-slate-900">Galleries</h1>
-               <p className="text-slate-500 text-sm">Manage your client galleries</p>
+               <h1 className="text-3xl font-serif text-zinc-900 tracking-wide font-light">Galleries</h1>
+               <p className="text-zinc-500 text-xs tracking-widest mt-1 uppercase">Manage your client galleries</p>
             </div>
             <div className="flex flex-wrap w-full sm:w-auto gap-3 mt-4 sm:mt-0">
               {userId && userEmail === 'ringa.michael@gmail.com' && (
                 <button
                   onClick={() => window.open(`#/p/${userId}`, '_blank')}
-                  className="flex-[1_1_45%] sm:flex-none border border-slate-200 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-95"
+                  className="flex-[1_1_45%] sm:flex-none border border-zinc-200 hover:bg-zinc-50 text-zinc-900 px-5 py-2.5 rounded-sm flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-95 tracking-widest uppercase text-[10px] font-medium"
                 >
-                  <Globe className="w-4 h-4" />
-                  <span className="text-sm font-medium">Live Portfolio</span>
+                  <Globe className="w-4 h-4" strokeWidth={1.5} />
+                  <span>Live Portfolio</span>
                 </button>
               )}
               <button
               onClick={handleOpenCreateModal}
-              className="flex-[1_1_100%] sm:flex-none bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-full flex items-center justify-center space-x-2 transition-all shadow-lg active:scale-95"
+              className="flex-[1_1_100%] sm:flex-none bg-zinc-900 hover:bg-zinc-800 text-white px-5 py-2.5 rounded-sm flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-95 tracking-widest uppercase text-[10px] font-medium"
               >
-              <Plus className="w-5 h-5" />
-              <span className="text-sm font-medium">New Gallery</span>
+              <Plus className="w-4 h-4" strokeWidth={1.5} />
+              <span>New Gallery</span>
               </button>
             </div>
         </div>
 
         {/* Private Client Deliveries Section */}
         <div className="mb-12">
-            <h2 className="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Client Deliveries</h2>
+            <h2 className="text-sm font-medium text-zinc-900 mb-6 border-b border-zinc-200 pb-3 tracking-widest uppercase">Client Deliveries</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {galleries.filter(g => !g.category || g.category.trim() === '').map((gallery) => (
                 <div 
@@ -280,7 +280,7 @@ export const Dashboard: React.FC = () => {
                     className="group cursor-pointer flex flex-col"
                 >
                     {/* Image Container */}
-                    <div className="relative aspect-[3/2] bg-slate-100 rounded-xl overflow-hidden mb-3 shadow-sm transition-all duration-300 group-hover:shadow-md border border-slate-100">
+                    <div className="relative aspect-[3/2] bg-zinc-100 rounded-sm overflow-hidden mb-3 transition-all duration-300 group-hover:shadow-lg border border-zinc-200">
                     {gallery.coverUrl ? (
                         gallery.coverType === 'video' ? (
                             <video 
@@ -320,7 +320,7 @@ export const Dashboard: React.FC = () => {
                     {/* Status Badges Overlay */}
                     <div className="absolute top-2 left-2 flex gap-1 z-10">
                         {gallery.selection_status === 'submitted' && (
-                            <div className="bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm flex items-center gap-1 animate-bounce">
+                            <div className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-sm shadow-sm flex items-center gap-1">
                                 <Heart className="w-3 h-3 fill-current" />
                                 SUBMITTED
                             </div>
@@ -341,23 +341,23 @@ export const Dashboard: React.FC = () => {
                     </div>
 
                     {/* Info Container */}
-                    <div className="space-y-1 px-1">
+                    <div className="space-y-1.5 px-0.5 mt-2">
                     {/* Title Row */}
                     <div className="flex items-center gap-2">
                         {gallery.link_enabled ? (
-                        <Eye className="w-4 h-4 text-slate-400" />
+                        <Eye className="w-4 h-4 text-zinc-400" strokeWidth={1.5} />
                         ) : (
-                        <EyeOff className="w-4 h-4 text-slate-400" />
+                        <EyeOff className="w-4 h-4 text-zinc-400" strokeWidth={1.5} />
                         )}
-                        <h3 className="font-semibold text-slate-800 truncate group-hover:text-slate-600 transition-colors">
+                        <h3 className="font-serif text-lg tracking-wide text-zinc-900 truncate group-hover:text-zinc-600 transition-colors">
                         {gallery.client_name}
                         </h3>
                     </div>
 
                     {/* Status Row */}
-                    <div className="flex items-center gap-2 text-xs">
-                        <div className={`w-2 h-2 rounded-full ${gallery.link_enabled && gallery.itemCount > 0 ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
-                        <span className="text-slate-500">
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[10px]">
+                        <div className={`w-1.5 h-1.5 rounded-full ${gallery.link_enabled && gallery.itemCount > 0 ? 'bg-zinc-900' : 'bg-zinc-300'}`}></div>
+                        <span className="text-zinc-500 font-medium">
                         {gallery.itemCount} {gallery.itemCount === 1 ? 'item' : 'items'}
                         </span>
                     </div>
@@ -374,11 +374,11 @@ export const Dashboard: React.FC = () => {
                     }}
                     className="group cursor-pointer flex flex-col h-full"
                 >
-                    <div className="relative aspect-[3/2] flex flex-col items-center justify-center bg-slate-50 rounded-xl overflow-hidden mb-3 border-2 border-dashed border-slate-200 transition-all duration-300 group-hover:border-slate-400 group-hover:bg-slate-100">
-                        <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-slate-600 transition-colors mb-3 group-hover:scale-110">
-                            <Plus className="w-6 h-6" />
+                    <div className="relative aspect-[3/2] flex flex-col items-center justify-center bg-zinc-50 rounded-sm overflow-hidden mb-3 border border-dashed border-zinc-300 transition-all duration-300 hover:border-zinc-500 hover:bg-white group">
+                        <div className="w-10 h-10 rounded-full bg-white border border-zinc-200 shadow-sm flex items-center justify-center text-zinc-400 group-hover:text-zinc-600 transition-colors mb-3 group-hover:scale-105">
+                            <Plus className="w-5 h-5" strokeWidth={1.5} />
                         </div>
-                        <span className="font-medium text-slate-500 group-hover:text-slate-700">Add New Delivery</span>
+                        <span className="font-medium text-xs tracking-widest text-zinc-500 group-hover:text-zinc-700 uppercase">Add New Delivery</span>
                     </div>
                 </div>
                 )}
@@ -388,7 +388,7 @@ export const Dashboard: React.FC = () => {
         {/* Portfolio Collections Section */}
         {userEmail === 'ringa.michael@gmail.com' && (
         <div className="mb-12">
-            <h2 className="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Portfolio Collections</h2>
+            <h2 className="text-sm font-medium text-zinc-900 mb-6 border-b border-zinc-200 pb-3 tracking-widest uppercase">Portfolio Collections</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {galleries.filter(g => g.category && g.category.trim() !== '').map((gallery) => (
                 <div 
@@ -396,7 +396,7 @@ export const Dashboard: React.FC = () => {
                     onClick={() => navigate(`/gallery/${gallery.id}`)}
                     className="group cursor-pointer flex flex-col relative"
                 >
-                    <div className="relative aspect-[4/5] bg-slate-900 rounded-xl overflow-hidden shadow-sm transition-all duration-300 group-hover:shadow-md">
+                    <div className="relative aspect-[4/5] bg-zinc-900 rounded-sm overflow-hidden transition-all duration-300 group-hover:shadow-xl">
                         {gallery.coverUrl ? (
                             gallery.coverType === 'video' ? (
                                 <video 
@@ -461,11 +461,11 @@ export const Dashboard: React.FC = () => {
                     }}
                     className="group cursor-pointer flex flex-col h-full"
                 >
-                    <div className="relative aspect-[4/5] flex flex-col items-center justify-center bg-transparent rounded-xl overflow-hidden border-2 border-dashed border-slate-300 transition-all duration-300 group-hover:border-slate-500 group-hover:bg-slate-50">
-                        <div className="w-10 h-10 rounded-full bg-slate-100 shadow-sm flex items-center justify-center text-slate-500 group-hover:text-slate-700 transition-colors mb-2 group-hover:scale-110">
-                            <Plus className="w-5 h-5" />
+                    <div className="relative aspect-[4/5] flex flex-col items-center justify-center bg-transparent rounded-sm overflow-hidden border border-dashed border-zinc-300 transition-all duration-300 hover:border-zinc-500 hover:bg-zinc-50 group">
+                        <div className="w-10 h-10 rounded-full bg-white border border-zinc-200 shadow-sm flex items-center justify-center text-zinc-500 group-hover:text-zinc-700 transition-colors mb-2 group-hover:scale-105">
+                            <Plus className="w-5 h-5" strokeWidth={1.5} />
                         </div>
-                        <span className="font-medium text-sm text-slate-500 group-hover:text-slate-700">New Collection</span>
+                        <span className="font-medium tracking-widest uppercase text-[10px] text-zinc-500 group-hover:text-zinc-700">New Collection</span>
                     </div>
                 </div>
                 )}
@@ -475,43 +475,43 @@ export const Dashboard: React.FC = () => {
 
         {/* Empty State (If literally 0 galleries total exists everywhere) */}
         {galleries.length === 0 && (
-            <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-400 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-                <ImageIcon className="w-12 h-12 mb-4 text-slate-300" />
-                <p className="font-medium">Welcome to your studio dashboard.</p>
-                <p className="text-sm mt-1">Click "New Gallery" to create a private delivery or portfolio collection.</p>
+            <div className="col-span-full py-20 flex flex-col items-center justify-center text-zinc-400 bg-zinc-50 rounded-sm border border-dashed border-zinc-200">
+                <ImageIcon className="w-8 h-8 mb-4 text-zinc-300" strokeWidth={1} />
+                <p className="font-serif text-lg tracking-wide text-zinc-900">Welcome to your studio</p>
+                <p className="text-xs tracking-widest uppercase mt-2 text-zinc-500">Create a delivery or portfolio collection.</p>
             </div>
         )}
       </div>
 
       {/* Sidebar: Recent Activity */}
       <div className="w-full lg:w-80 shrink-0">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 sticky top-24">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                <Bell className="w-5 h-5 text-slate-500" />
+        <div className="bg-white rounded-sm shadow-sm border border-zinc-200 p-6 sticky top-24">
+            <h2 className="text-xs tracking-widest font-medium text-zinc-900 mb-6 uppercase border-b border-zinc-100 pb-3 flex items-center gap-2">
+                <Bell className="w-4 h-4 text-zinc-400" strokeWidth={1.5} />
                 Recent Activity
             </h2>
             
             {activities.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
-                    <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No recent activity</p>
+                <div className="text-center py-8 text-zinc-400">
+                    <Clock className="w-6 h-6 mx-auto mb-3 opacity-50" strokeWidth={1} />
+                    <p className="text-xs uppercase tracking-widest">No recent activity</p>
                 </div>
             ) : (
                 <div className="space-y-4">
                     {activities.map((log) => (
-                        <div key={log.id} className="flex gap-3 text-sm border-b border-slate-50 pb-3 last:border-0 last:pb-0">
-                            <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${
-                                log.action.includes('submitted') ? 'bg-rose-500' : 
-                                log.action.includes('Payment') ? 'bg-emerald-500' : 'bg-slate-300'
+                        <div key={log.id} className="flex gap-3 text-sm border-b border-zinc-50 pb-4 last:border-0 last:pb-0 block">
+                            <div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
+                                log.action.includes('submitted') ? 'bg-red-500' : 
+                                log.action.includes('Payment') ? 'bg-zinc-900' : 'bg-zinc-300'
                             }`} />
                             <div>
-                                <p className="text-slate-900 font-medium leading-tight mb-0.5">
+                                <p className="text-zinc-900 font-medium leading-tight mb-0.5 tracking-wide text-sm font-serif">
                                     {log.gallery?.client_name || 'Unknown Gallery'}
                                 </p>
-                                <p className="text-slate-600 leading-snug mb-1">
+                                <p className="text-zinc-500 leading-snug mb-2 text-xs">
                                     {log.action.replace(/Client submitted selection of (\d+) photos/, 'Selected $1 photos')}
                                 </p>
-                                <p className="text-xs text-slate-400">
+                                <p className="text-[10px] uppercase tracking-widest text-zinc-400">
                                     {formatDate(log.timestamp)}
                                 </p>
                             </div>
@@ -524,21 +524,21 @@ export const Dashboard: React.FC = () => {
 
       {/* Create Gallery Modal */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h2 className="text-lg font-semibold text-slate-900">New Gallery</h2>
+        <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-sm shadow-2xl border border-zinc-200 w-full max-w-md overflow-hidden">
+            <div className="px-6 py-5 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
+              <h2 className="text-sm tracking-widest font-medium text-zinc-900 uppercase">New Gallery</h2>
               <button 
                 onClick={() => setIsCreateModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 transition-colors"
+                className="text-zinc-400 hover:text-zinc-900 transition-colors"
                 disabled={isCreating}
               >
-                ✕
+                <X className="w-5 h-5" strokeWidth={1} />
               </button>
             </div>
             <form onSubmit={createGallery} className="p-6">
               <div className="mb-4">
-                <label htmlFor="clientName" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="clientName" className="block text-xs uppercase tracking-widest font-medium text-zinc-500 mb-2">
                   Client Name or Event Title
                 </label>
                 <input
@@ -546,7 +546,7 @@ export const Dashboard: React.FC = () => {
                   type="text"
                   value={newClientName}
                   onChange={(e) => setNewClientName(e.target.value)}
-                  className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-sm focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 outline-none transition-all text-zinc-900 placeholder:text-zinc-400 font-serif"
                   placeholder="e.g. John & Jane Wedding"
                   autoFocus
                   required
@@ -556,7 +556,7 @@ export const Dashboard: React.FC = () => {
 
               {userEmail === 'ringa.michael@gmail.com' && (
               <div className="mb-6">
-                <label htmlFor="category" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="category" className="block text-xs uppercase tracking-widest font-medium text-zinc-500 mb-2">
                   Portfolio Category
                 </label>
                 <input
@@ -565,7 +565,7 @@ export const Dashboard: React.FC = () => {
                   list="category-options"
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-sm focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 outline-none transition-all text-zinc-900 placeholder:text-zinc-400 font-serif"
                   placeholder="e.g. Wedding, Sports, Real Estate..."
                   disabled={isCreating}
                 />
@@ -584,7 +584,7 @@ export const Dashboard: React.FC = () => {
                     <option key={cat as string} value={cat as string} />
                   ))}
                 </datalist>
-                <p className="text-xs text-slate-500 mt-2">Pick from the list or type your own to creatively group your public portfolio.</p>
+                <p className="text-[10px] text-zinc-400 mt-2 uppercase tracking-wide">Pick from the list or type your own to creatively group your public portfolio.</p>
               </div>
               )}
 
@@ -592,7 +592,7 @@ export const Dashboard: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-4 py-2 font-medium text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors"
+                  className="px-6 py-2.5 text-xs font-medium tracking-widest uppercase text-zinc-500 hover:text-zinc-900 transition-colors"
                   disabled={isCreating}
                 >
                   Cancel
@@ -600,7 +600,7 @@ export const Dashboard: React.FC = () => {
                 <button
                   type="submit"
                   disabled={!newClientName.trim() || isCreating}
-                  className="px-6 py-2 bg-slate-900 text-white font-medium rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-8 py-2.5 bg-zinc-900 text-white text-xs font-medium tracking-widest uppercase rounded-sm hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isCreating ? 'Creating...' : 'Create Gallery'}
                 </button>

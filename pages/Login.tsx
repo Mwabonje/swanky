@@ -150,7 +150,7 @@ export const Login: React.FC = () => {
             <div className="bg-emerald-100 p-3 rounded-full mb-3">
                 <Camera className="w-8 h-8 text-emerald-600" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">ProGallery</h1>
+            <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-2">Swanky Gallery</h1>
             <p className="text-slate-500">Photographer Portal</p>
         </div>
 

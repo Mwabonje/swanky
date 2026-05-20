@@ -75,6 +75,12 @@ async function startServer() {
       // Clean up the key: remove leading slashes and any query parameters
       key = key.split('?')[0];
       if (key.startsWith('/')) key = key.substring(1);
+      
+      try {
+        key = decodeURIComponent(key);
+      } catch (e) {
+        // ignore
+      }
 
       // We only support images for resizing. 
       const getObj = new GetObjectCommand({

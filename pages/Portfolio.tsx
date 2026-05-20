@@ -149,7 +149,7 @@ export const Portfolio: React.FC = () => {
                         const catGalleries = galleries.filter(g => g.category === cat);
                         const hasDropdown = !isAll && catGalleries.length > 0;
                         
-                        const displayCatName = isAll ? 'HOME' : (cat.toLowerCase() === 'airbnb' ? 'HOSPITALITY' : (cat as string).toUpperCase());
+                        const displayCatName = isAll ? 'HOME' : ((cat as string).toLowerCase() === 'airbnb' ? 'HOSPITALITY' : (cat as string).toUpperCase());
 
                         return (
                             <div key={cat as string} className="relative group">
@@ -211,7 +211,7 @@ export const Portfolio: React.FC = () => {
                             const isAll = cat === 'All';
                             const catGalleries = galleries.filter(g => g.category === cat);
                             const hasDropdown = !isAll && catGalleries.length > 0;
-                            const displayCatName = isAll ? 'HOME' : (cat.toLowerCase() === 'airbnb' ? 'HOSPITALITY' : (cat as string).toUpperCase());
+                            const displayCatName = isAll ? 'HOME' : ((cat as string).toLowerCase() === 'airbnb' ? 'HOSPITALITY' : (cat as string).toUpperCase());
 
                             return (
                                 <button

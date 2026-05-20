@@ -22,19 +22,19 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-zinc-50 flex flex-col md:flex-row">
       {/* Mobile Header */}
-      <div className="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-30 shadow-md">
+      <div className="md:hidden bg-white text-zinc-900 p-4 flex justify-between items-center sticky top-0 z-30 border-b border-zinc-200">
         <div className="flex items-center space-x-2">
-           <Camera className="w-6 h-6 text-emerald-400" />
-           <span className="text-xl font-bold tracking-tight">ProGallery</span>
+           <Camera className="w-6 h-6 text-zinc-900" strokeWidth={1} />
+           <span className="text-lg font-serif tracking-widest uppercase">Swanky</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-          className="p-2 -mr-2 rounded-md hover:bg-slate-800 transition-colors"
+          className="p-2 -mr-2 rounded-md hover:bg-zinc-100 transition-colors"
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobileMenuOpen ? <X className="w-6 h-6" strokeWidth={1} /> : <Menu className="w-6 h-6" strokeWidth={1} />}
         </button>
       </div>
 
@@ -48,14 +48,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out shadow-xl
-        md:relative md:translate-x-0 md:shadow-none flex flex-col justify-between
+        fixed inset-y-0 left-0 z-40 w-64 bg-white text-zinc-900 transform transition-transform duration-300 ease-in-out border-r border-zinc-200
+        md:relative md:translate-x-0 flex flex-col justify-between
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div>
-          <div className="p-6 hidden md:flex items-center space-x-3 border-b border-slate-700">
-            <Camera className="w-6 h-6 text-emerald-400" />
-            <span className="text-xl font-bold tracking-tight">ProGallery</span>
+          <div className="p-6 hidden md:flex items-center space-x-3 border-b border-zinc-200">
+            <Camera className="w-6 h-6 text-zinc-900" strokeWidth={1} />
+            <span className="text-xl font-serif tracking-widest text-zinc-900 uppercase">Swanky</span>
           </div>
           
           <nav className="mt-6 px-4 space-y-2">
@@ -66,37 +66,37 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               }}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive('/dashboard') 
-                  ? 'bg-emerald-600 text-white' 
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-zinc-100 text-zinc-900 font-medium' 
+                  : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900'
               }`}
             >
-              <LayoutDashboard className="w-5 h-5" />
+              <LayoutDashboard className="w-5 h-5" strokeWidth={1.5} />
               <span>Dashboard</span>
             </button>
             {/* Future settings link could go here */}
           </nav>
         </div>
 
-        <div className="p-4 border-t border-slate-700 space-y-4">
+        <div className="p-4 border-t border-zinc-200 space-y-4">
           {/* Upload Status in Sidebar */}
           {uploading && (
-            <div className="bg-slate-800 rounded-lg p-3 border border-slate-700">
+            <div className="bg-zinc-50 rounded-lg p-3 border border-zinc-200">
                 <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-slate-300 font-medium flex items-center gap-2">
-                        <Loader2 className="w-3 h-3 animate-spin text-emerald-400" />
+                    <span className="text-xs text-zinc-500 font-medium flex items-center gap-2">
+                        <Loader2 className="w-3 h-3 animate-spin text-zinc-900" />
                         Uploading...
                     </span>
-                    <span className="text-xs text-emerald-400 font-bold">{progress}%</span>
+                    <span className="text-xs text-zinc-900 font-bold">{progress}%</span>
                 </div>
-                <div className="w-full h-1 bg-slate-700 rounded-full overflow-hidden mb-3">
+                <div className="w-full h-1 bg-zinc-200 rounded-full overflow-hidden mb-3">
                     <div 
-                        className="h-full bg-emerald-500 transition-all duration-300 ease-out"
+                        className="h-full bg-zinc-900 transition-all duration-300 ease-out"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
                 <button 
                   onClick={cancelUpload}
-                  className="w-full text-xs text-center text-rose-400 hover:text-rose-300 font-medium py-1 hover:bg-slate-700 rounded transition-colors"
+                  className="w-full text-xs text-center text-red-500 hover:text-red-600 font-medium py-1 hover:bg-zinc-100 rounded transition-colors"
                 >
                   Cancel Upload
                 </button>
@@ -105,16 +105,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center space-x-3 px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+            className="w-full flex items-center space-x-3 px-4 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 rounded-lg transition-colors"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-5 h-5" strokeWidth={1.5} />
             <span>Sign Out</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto h-[calc(100vh-64px)] md:h-screen relative bg-gray-50">
+      <main className="flex-1 overflow-y-auto h-[calc(100vh-64px)] md:h-screen relative bg-zinc-50">
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
           {children}
         </div>
