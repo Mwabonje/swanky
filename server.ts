@@ -44,8 +44,15 @@ async function startServer() {
 
   // --- API ROUTES ---
 
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", r2Configured: isR2Configured });
+// API ROUTES
+  app.get("/api/health", async (req, res) => {
+    try {
+       const { ListObjectsV2Command } = await import('@aws-sdk/client-s3');
+       const list = s3 ? await s3.send(new ListObjectsV2Command({ Bucket: R2_BUCKET_NAME, MaxKeys: 100 })) : null;
+       res.json({ status: "ok", r2Configured: isR2Configured, keys: list?.Contents?.map(c => c.Key) });
+    } catch(e) {
+       res.json({ status: "ok", error: e.toString() });
+    }
   });
 
   // Generate a Pre-signed URL for uploading
@@ -82,28 +89,27 @@ async function startServer() {
         // ignore
       }
 
-      // We only support images for resizing. 
-      const getObj = new GetObjectCommand({
-        Bucket: R2_BUCKET_NAME,
-        Key: key
-      });
-
-      const data = await s3.send(getObj);
-      
-      if (!data.Body) {
-         return res.status(404).json({ error: "Image not found" });
+      // Fetch the image directly from the provided URL
+      let dataBuffer: Buffer;
+      try {
+         const fileRes = await fetch(urlStr);
+         if (!fileRes.ok) {
+            return res.status(404).json({ error: "Image not found at source" });
+         }
+         const arrayBuffer = await fileRes.arrayBuffer();
+         dataBuffer = Buffer.from(arrayBuffer);
+      } catch (e) {
+         console.error('Failed to fetch image from source URL:', e);
+         return res.status(500).json({ error: "Failed to download image" });
       }
-      
+
       const isWebpOptIn = req.headers.accept?.includes('image/webp');
       const format = isWebpOptIn ? 'webp' : 'jpeg';
 
       res.set('Content-Type', `image/${format}`);
       res.set('Cache-Control', 'public, max-age=31536000'); // 1 year cache
 
-      const byteArray = await data.Body.transformToByteArray();
-      const buffer = Buffer.from(byteArray);
-      
-      let transform = sharp(buffer);
+      let transform = sharp(dataBuffer);
       
       if (format === 'webp') {
           transform = transform.webp({ quality });
@@ -124,7 +130,7 @@ async function startServer() {
       res.send(resizedBuffer);
 
     } catch (e) {
-      console.error("image proxy error:", e);
+      console.error(`image proxy error`, e);
       res.redirect(req.query.url as string);
     }
   });

@@ -33,16 +33,7 @@ export const getTimeRemaining = (expiresAt: string) => {
 export const getCleanR2Url = (url: string) => {
   if (!url) return '';
   let cleanUrl = url.split('?')[0]; 
-  
-  if (cleanUrl.includes('supabase.co')) {
-    const r2BaseUrl = (import.meta as any).env.VITE_R2_PUBLIC_URL || '';
-    if (r2BaseUrl) {
-        const parts = cleanUrl.split('/public/gallery-files/');
-        if (parts.length === 2 && parts[1]) {
-           return `${r2BaseUrl.replace(/\/$/, '')}/${parts[1]}`;
-        }
-    }
-  }
+  // Disable R2 URL rewrite - Supabase storage files are not mirrored to the proxy R2 bucket
   return cleanUrl;
 };
 
