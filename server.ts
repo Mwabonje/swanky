@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import { Readable } from "stream";
 import { S3Client, PutObjectCommand, DeleteObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createServer as createViteServer } from "vite";
@@ -263,18 +264,27 @@ async function startServer() {
       // Fetch the image directly from the provided URL
       const fileRes = await fetch(urlStr);
       if (!fileRes.ok) {
-         return res.status(404).json({ error: "Image not found at source" });
+         console.error(`Failed to fetch from ${urlStr}, status: ${fileRes.status}`);
+         return res.status(fileRes.status || 404).json({ error: `Image not found at source (Status ${fileRes.status})` });
       }
       
       // Set appropriate headers for downloading
       const contentType = fileRes.headers.get("content-type") || "application/octet-stream";
       res.set("Content-Type", contentType);
+      res.set("Content-Disposition", "attachment");
       res.set("Cache-Control", "public, max-age=31536000"); // 1 year cache
       
-      // Stream the response back to the client
-      const arrayBuffer = await fileRes.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      return res.send(buffer);
+      // Stream the response back to the client directly
+      if (fileRes.body) {
+        // fileRes.body is a Web ReadableStream, we must convert it to a Node stream
+        // @ts-ignore
+        const nodeStream = Readable.fromWeb(fileRes.body);
+        return nodeStream.pipe(res);
+      } else {
+        const arrayBuffer = await fileRes.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        return res.end(buffer);
+      }
     } catch (e) {
       console.error('Failed to proxy download file:', e);
       return res.status(500).json({ error: "Failed to download file" });
