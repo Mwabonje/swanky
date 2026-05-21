@@ -38,8 +38,7 @@ export const handler: Handler = async (event) => {
     }
 
     const uniqueId = Math.random().toString(36).substring(2);
-    const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const filePath = `uploads/${Date.now()}_${uniqueId}/${sanitizedFileName}`;
+    const filePath = `uploads/${Date.now()}_${uniqueId}/${fileName}`;
 
     const command = new PutObjectCommand({
       Bucket: R2_BUCKET_NAME!,
@@ -49,7 +48,7 @@ export const handler: Handler = async (event) => {
 
     const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
     const cleanPublicUrlBase = VITE_R2_PUBLIC_URL!.replace(/\/$/, "");
-    const publicUrl = `${cleanPublicUrlBase}/${filePath}`;
+    const publicUrl = `${cleanPublicUrlBase}/${filePath.split('/').map(v => encodeURIComponent(v)).join('/')}`;
 
     return {
       statusCode: 200,

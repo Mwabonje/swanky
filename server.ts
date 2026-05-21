@@ -147,10 +147,9 @@ async function startServer() {
          return res.status(400).json({ error: "fileName and fileType are required" });
       }
 
-      // Generate a clean, unique file path mimicking what the app does
+      // Generate a unique file path while preserving the original file name
       const uniqueId = Math.random().toString(36).substring(2);
-      const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.\_-]/g, "_");
-      const filePath = `uploads/${Date.now()}_${uniqueId}/${sanitizedFileName}`;
+      const filePath = `uploads/${Date.now()}_${uniqueId}/${fileName}`;
 
       const command = new PutObjectCommand({
         Bucket: R2_BUCKET_NAME,
@@ -163,7 +162,8 @@ async function startServer() {
       
       // Clean up the public URL to ensure no double slashes
       const cleanPublicUrlBase = VITE_R2_PUBLIC_URL!.replace(/\/$/, "");
-      const publicUrl = `${cleanPublicUrlBase}/${filePath}`;
+      // Encode the file path for the public URL so spaces and special characters work
+      const publicUrl = `${cleanPublicUrlBase}/${filePath.split('/').map(v => encodeURIComponent(v)).join('/')}`;
 
       res.json({
         presignedUrl,

@@ -151,16 +151,14 @@ export const GalleryManager: React.FC = () => {
   const isPortfolio = Boolean(gallery?.category && gallery.category.trim() !== '');
 
   const filterDuplicateFiles = (fileList: FileList) => {
-    const sanitizeName = (name: string) => name.replace(/[^a-zA-Z0-9.\_-]/g, "_");
     const newFiles: File[] = [];
     const duplicateFiles: string[] = [];
 
     Array.from(fileList).forEach(f => {
-        const sanitized = sanitizeName(f.name);
-        // Compare with existing file names
+        // Compare with existing file names directly
         const isDuplicate = files.some(existingFile => {
             const existingName = existingFile.file_path.split('/').pop();
-            return existingName === sanitized;
+            return existingName === f.name;
         });
         
         if (isDuplicate) {
