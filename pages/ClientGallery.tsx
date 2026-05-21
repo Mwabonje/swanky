@@ -352,14 +352,10 @@ export const ClientGallery: React.FC = () => {
       await supabase.rpc('increment_download', { row_id: file.id });
       
       const response = await fetch(rewriteUrlToR2(file.file_url));
+      if (!response.ok) throw new Error('Fetch failed');
       const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = file.file_path.split('/').pop() || 'download';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const fileName = decodeURIComponent(file.file_path.split('/').pop() || 'download');
+      saveAs(blob, fileName);
       
       // Short timeout to allow the download to start before removing spinner
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -408,7 +404,7 @@ export const ClientGallery: React.FC = () => {
           const response = await fetch(rewriteUrlToR2(file.file_url), { signal });
           if (!response.ok) throw new Error(`Failed to fetch ${file.file_path}`);
           const blob = await response.blob();
-          const fileName = file.file_path.split('/').pop() || `file-${file.id}`;
+          const fileName = decodeURIComponent(file.file_path.split('/').pop() || `file-${file.id}`);
           zip.file(fileName, blob);
         } catch (error: any) {
           if (error.name !== 'AbortError') {
