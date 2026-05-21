@@ -271,7 +271,8 @@ async function startServer() {
       // Set appropriate headers for downloading
       const contentType = fileRes.headers.get("content-type") || "application/octet-stream";
       res.set("Content-Type", contentType);
-      res.set("Content-Disposition", "attachment");
+      const filename = req.query.filename as string || "download";
+      res.set("Content-Disposition", `attachment; filename="${filename}"`);
       res.set("Cache-Control", "public, max-age=31536000"); // 1 year cache
       
       // Stream the response back to the client directly

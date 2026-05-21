@@ -352,21 +352,17 @@ export const ClientGallery: React.FC = () => {
       await supabase.rpc('increment_download', { row_id: file.id });
       
       // Instead of fetching the blob into JS memory, let the browser handle it directly
-      const downloadProxyUrl = `/api/proxy-download?url=${encodeURIComponent(getCleanR2Url(file.file_url))}`;
-      
-      const link = document.createElement('a');
-      link.href = downloadProxyUrl;
-      
       let fileName = file.file_path.split('/').pop() || 'download';
       try { fileName = decodeURIComponent(fileName); } catch (e) {}
-      link.download = fileName;
+
+      const downloadProxyUrl = `/api/proxy-download?url=${encodeURIComponent(file.file_url)}&filename=${encodeURIComponent(fileName)}`;
       
-      // For some browsers, we might need target=_blank for downloads initiated via proxy
-      // link.target = '_blank';
-      
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const response = await fetch(downloadProxyUrl);
+      if (!response.ok) {
+        throw new Error(`Proxy error: ${response.status}`);
+      }
+      const blob = await response.blob();
+      saveAs(blob, fileName);
       
       // Short timeout to allow the download to start before removing spinner
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -412,7 +408,7 @@ export const ClientGallery: React.FC = () => {
         if (signal.aborted) return;
         
         try {
-          const downloadProxyUrl = `/api/proxy-download?url=${encodeURIComponent(getCleanR2Url(file.file_url))}`;
+          const downloadProxyUrl = `/api/proxy-download?url=${encodeURIComponent(file.file_url)}`;
           const response = await fetch(downloadProxyUrl, { signal });
           if (!response.ok) throw new Error(`Failed to fetch ${file.file_path}`);
           const blob = await response.blob();
