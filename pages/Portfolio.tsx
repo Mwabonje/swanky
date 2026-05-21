@@ -119,9 +119,9 @@ export const Portfolio: React.FC = () => {
         : galleries.filter(g => g.category === activeCategory);
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 flex flex-col items-center justify-center font-sans tracking-widest uppercase">
-            <h1 className="text-3xl md:text-[44px] mb-4 font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Swanky Photography</h1>
-            <p className="text-slate-400 text-xs md:text-sm">Portfolio currently under maintenance.</p>
+        <div className="min-h-screen bg-white text-slate-900 flex flex-col items-center justify-center font-sans tracking-widest uppercase p-6 text-center">
+            <h1 className="text-2xl sm:text-3xl md:text-[44px] mb-4 font-bold tracking-tight md:tracking-widest w-full max-w-full break-words" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Swanky Photography</h1>
+            <p className="text-slate-400 text-xs sm:text-sm tracking-widest px-4">Portfolio currently under maintenance.</p>
         </div>
     );
 };
