@@ -252,16 +252,34 @@ async function startServer() {
     }
   });
 
-  // Proxy the download to bypass CORS if Cloudflare bucket doesn't have CORS setup
-  // While Cloudflare supports CORS, proxying makes it zero-setup for the user.
-  // We'll redirect instead of streaming to save server bandwidth since Cloudflare R2 is fast, 
-  // wait actually, for zip generation JSZip needs the actual data, so JSZip fetches the public URL
-  // The public URL requires CORS if fetched directly via XHR/fetch!
-  // BUT the user just sets up Cloudflare. Let's tell the user to set CORS OR proxy it.
-  // Actually, wait, R2 public bucket access DOES NOT support CORS easily unless on a custom domain according to old docs.
-  // Actually, R2 supports CORS. But it's easier to just fetch proxy if needed, though for large zips it's bad.
-  // Given we are downloading photos locally to browser to zip, we MUST have CORS on Cloudflare R2.
-  // We'll instruct the user.
+  // Proxy the download of original files without compression
+  app.get("/api/proxy-download", async (req, res) => {
+    try {
+      const urlStr = req.query.url as string;
+      if (!urlStr) {
+         return res.status(400).json({ error: "URL is required" });
+      }
+
+      // Fetch the image directly from the provided URL
+      const fileRes = await fetch(urlStr);
+      if (!fileRes.ok) {
+         return res.status(404).json({ error: "Image not found at source" });
+      }
+      
+      // Set appropriate headers for downloading
+      const contentType = fileRes.headers.get("content-type") || "application/octet-stream";
+      res.set("Content-Type", contentType);
+      res.set("Cache-Control", "public, max-age=31536000"); // 1 year cache
+      
+      // Stream the response back to the client
+      const arrayBuffer = await fileRes.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      return res.send(buffer);
+    } catch (e) {
+      console.error('Failed to proxy download file:', e);
+      return res.status(500).json({ error: "Failed to download file" });
+    }
+  });
 
   // --- VITE FRONTEND MIDDLEWARE ---
   if (process.env.NODE_ENV !== "production") {

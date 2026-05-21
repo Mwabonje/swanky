@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Download, Clock, Lock, AlertCircle, X, ShieldAlert, FolderDown, Loader2, Mail, CheckCircle2, Heart, FileImage, FileVideo, Send, Eye, ArrowLeft, Image as ImageIcon, Edit2, ArrowUpRight } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { Gallery, GalleryFile } from '../types';
-import { formatCurrency, getTimeRemaining, getOptimizedImageUrl, rewriteUrlToR2 } from '../utils/formatters';
+import { formatCurrency, getTimeRemaining, getOptimizedImageUrl, rewriteUrlToR2, getCleanR2Url } from '../utils/formatters';
 // @ts-ignore
 import JSZip from 'jszip';
 // @ts-ignore
@@ -351,11 +351,25 @@ export const ClientGallery: React.FC = () => {
     try {
       await supabase.rpc('increment_download', { row_id: file.id });
       
-      const response = await fetch(rewriteUrlToR2(file.file_url));
+      const downloadProxyUrl = `/api/proxy-download?url=${encodeURIComponent(getCleanR2Url(file.file_url))}`;
+      const response = await fetch(downloadProxyUrl);
       if (!response.ok) throw new Error('Fetch failed');
       const blob = await response.blob();
-      const fileName = decodeURIComponent(file.file_path.split('/').pop() || 'download');
-      saveAs(blob, fileName);
+      let fileName = file.file_path.split('/').pop() || 'download';
+      try {
+          fileName = decodeURIComponent(fileName);
+      } catch (e) {
+          // ignore error if not encoded properly
+      }
+      
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
       
       // Short timeout to allow the download to start before removing spinner
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -401,10 +415,12 @@ export const ClientGallery: React.FC = () => {
         if (signal.aborted) return;
         
         try {
-          const response = await fetch(rewriteUrlToR2(file.file_url), { signal });
+          const downloadProxyUrl = `/api/proxy-download?url=${encodeURIComponent(getCleanR2Url(file.file_url))}`;
+          const response = await fetch(downloadProxyUrl, { signal });
           if (!response.ok) throw new Error(`Failed to fetch ${file.file_path}`);
           const blob = await response.blob();
-          const fileName = decodeURIComponent(file.file_path.split('/').pop() || `file-${file.id}`);
+          let fileName = file.file_path.split('/').pop() || `file-${file.id}`;
+          try { fileName = decodeURIComponent(fileName); } catch (e) {}
           zip.file(fileName, blob);
         } catch (error: any) {
           if (error.name !== 'AbortError') {
