@@ -625,7 +625,7 @@ export const ClientGallery: React.FC = () => {
       </header>
 
       {/* Grid */}
-      <main className={isHorizontalLayout ? "w-full overflow-hidden" : "max-w-7xl mx-auto px-2 md:px-4 py-4 md:py-8"}>
+      <main className={isHorizontalLayout ? "w-full overflow-hidden" : "max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-10"}>
         {isSelectionMode && viewFilter === 'all' && (
             <div className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-lg flex items-start gap-3 md:hidden">
                 <Heart className="w-5 h-5 text-rose-500 mt-0.5 shrink-0" />
@@ -660,10 +660,10 @@ export const ClientGallery: React.FC = () => {
             <div 
                 ref={isHorizontalLayout ? horizontalRef : undefined}
                 className={isHorizontalLayout 
-                    ? `flex overflow-x-auto snap-x snap-mandatory md:snap-proximity gap-2 md:gap-4 pb-8 pt-4 sm:pt-8 w-full items-center h-[calc(100vh-140px)] min-h-[500px] px-4 md:px-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${displayedFiles.length === 1 ? 'justify-center' : ''}`
+                    ? `flex overflow-x-auto snap-x snap-mandatory md:snap-proximity gap-2 md:gap-4 pb-8 pt-4 sm:pt-8 w-full items-center h-[calc(100vh-140px)] min-h-[500px] px-4 md:px-8 max-w-[2000px] mx-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${displayedFiles.length === 1 ? 'justify-center' : ''}`
                     : isPortfolio 
-                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 md:gap-2 animate-in fade-in slide-in-from-bottom-4 duration-500" 
-                        : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4 lg:gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500" 
+                        : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5 gap-2 md:gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
                 }
             >
             {(() => {

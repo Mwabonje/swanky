@@ -272,7 +272,7 @@ export const Dashboard: React.FC = () => {
         {/* Private Client Deliveries Section */}
         <div className="mb-12">
             <h2 className="text-sm font-medium text-zinc-900 mb-6 border-b border-zinc-200 pb-3 tracking-widest uppercase">Client Deliveries</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                 {galleries.filter(g => !g.category || g.category.trim() === '').map((gallery) => (
                 <div 
                     key={gallery.id} 
@@ -389,7 +389,7 @@ export const Dashboard: React.FC = () => {
         {userEmail === 'ringa.michael@gmail.com' && (
         <div className="mb-12">
             <h2 className="text-sm font-medium text-zinc-900 mb-6 border-b border-zinc-200 pb-3 tracking-widest uppercase">Portfolio Collections</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                 {galleries.filter(g => g.category && g.category.trim() !== '').map((gallery) => (
                 <div 
                     key={gallery.id} 
