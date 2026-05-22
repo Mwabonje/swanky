@@ -28,6 +28,7 @@ export const Dashboard: React.FC = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'workspace' | 'portfolio'>('workspace');
 
   useEffect(() => {
     fetchData();
@@ -108,8 +109,10 @@ export const Dashboard: React.FC = () => {
 
   const handleOpenCreateModal = () => {
     setNewClientName('');
-    if (userEmail !== 'ringa.michael@gmail.com') {
-      setNewCategory(''); // Force empty so they can only create client deliveries
+    if (activeTab === 'portfolio') {
+      setNewCategory('Wedding'); // Default portfolio category
+    } else {
+      setNewCategory(''); // Empty for client deliveries
     }
     setIsCreateModalOpen(true);
   };
@@ -241,16 +244,39 @@ export const Dashboard: React.FC = () => {
   if (loading) return <div className="flex justify-center items-center h-full text-slate-400"><Loader2 className="animate-spin mr-2" /> Loading dashboard...</div>;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
+    <div className="flex flex-col lg:flex-row gap-8 w-full max-w-full">
       {/* Main Content */}
-      <div className="flex-1">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10">
-            <div>
-               <h1 className="text-3xl font-serif text-zinc-900 tracking-wide font-light">Galleries</h1>
-               <p className="text-zinc-500 text-xs tracking-widest mt-1 uppercase">Manage your client galleries</p>
+      <div className="flex-1 w-full max-w-full overflow-hidden">
+          
+        {/* Tabs */}
+        <div className="flex gap-6 border-b border-zinc-200 mb-8 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+            <button 
+                onClick={() => setActiveTab('workspace')}
+                className={`pb-3 text-xs tracking-widest uppercase font-medium transition-colors whitespace-nowrap relative ${activeTab === 'workspace' ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-600'}`}
+            >
+                Workspace
+                {activeTab === 'workspace' && <div className="absolute bottom-[-1px] left-0 w-full h-[1px] bg-zinc-900" />}
+            </button>
+            <button 
+                onClick={() => setActiveTab('portfolio')}
+                className={`pb-3 text-xs tracking-widest uppercase font-medium transition-colors whitespace-nowrap relative ${activeTab === 'portfolio' ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-600'}`}
+            >
+                Portfolio Manager
+                {activeTab === 'portfolio' && <div className="absolute bottom-[-1px] left-0 w-full h-[1px] bg-zinc-900" />}
+            </button>
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10 w-full min-w-0">
+            <div className="min-w-0">
+               <h1 className="text-3xl font-serif text-zinc-900 tracking-wide font-light truncate">
+                  {activeTab === 'workspace' ? 'Client Deliveries' : 'Portfolio Collections'}
+               </h1>
+               <p className="text-zinc-500 text-xs tracking-widest mt-1 uppercase">
+                  {activeTab === 'workspace' ? 'Manage your client galleries' : 'Manage your public portfolio'}
+               </p>
             </div>
             <div className="flex flex-wrap w-full sm:w-auto gap-3 mt-4 sm:mt-0">
-              {userId && userEmail === 'ringa.michael@gmail.com' && (
+              {userId && (
                 <button
                   onClick={() => window.open(`#/p/${userId}`, '_blank')}
                   className="flex-[1_1_45%] sm:flex-none border border-zinc-200 hover:bg-zinc-50 text-zinc-900 px-5 py-2.5 rounded-sm flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-95 tracking-widest uppercase text-[10px] font-medium"
@@ -270,6 +296,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Private Client Deliveries Section */}
+        {activeTab === 'workspace' && (
         <div className="mb-12">
             <h2 className="text-sm font-medium text-zinc-900 mb-6 border-b border-zinc-200 pb-3 tracking-widest uppercase">Client Deliveries</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
@@ -384,9 +411,10 @@ export const Dashboard: React.FC = () => {
                 )}
             </div>
         </div>
+        )}
 
         {/* Portfolio Collections Section */}
-        {userEmail === 'ringa.michael@gmail.com' && (
+        {activeTab === 'portfolio' && (
         <div className="mb-12">
             <h2 className="text-sm font-medium text-zinc-900 mb-6 border-b border-zinc-200 pb-3 tracking-widest uppercase">Portfolio Collections</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
@@ -554,7 +582,7 @@ export const Dashboard: React.FC = () => {
                 />
               </div>
 
-              {userEmail === 'ringa.michael@gmail.com' && (
+              {activeTab === 'portfolio' && (
               <div className="mb-6">
                 <label htmlFor="category" className="block text-xs uppercase tracking-widest font-medium text-zinc-500 mb-2">
                   Portfolio Category
