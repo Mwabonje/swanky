@@ -56,15 +56,15 @@ export const Portfolio: React.FC = () => {
                         // The cover is defined as the most recently updated file (by created_at)
                         const { data: files } = await supabase
                             .from('files')
-                            .select('file_url, file_type')
+                            .select('file_url, file_type, thumbnail_url')
                             .eq('gallery_id', gallery.id)
                             .order('created_at', { ascending: false })
                             .limit(1);
 
                         return {
                             ...gallery,
-                            coverUrl: files && files.length > 0 ? files[0].file_url : null,
-                            coverType: files && files.length > 0 ? files[0].file_type : null,
+                            coverUrl: files && files.length > 0 ? (files[0].thumbnail_url || files[0].file_url) : null,
+                            coverType: files && files.length > 0 && (files[0].file_type === 'video' || (files[0].file_url && files[0].file_url.match(/\.(mp4|mov|webm|ogg)$/i))) ? 'video' : 'image',
                         };
                     })
                 );
@@ -110,7 +110,7 @@ export const Portfolio: React.FC = () => {
     }
 
     // Extract unique categories (defaulting heavily to un-categorized if not set)
-    const categories = ['All', ...Array.from(new Set(galleries.map(g => g.category).filter(c => Boolean(c) && c?.toLowerCase() !== 'prints')))];
+    const categories = ['All', ...Array.from(new Set(galleries.map(g => g.category).filter(c => Boolean(c) && c?.toLowerCase() !== 'prints') as string[]))];
     
     const homeKeywords = ["rafiki", "lamu", "kilele"];
     

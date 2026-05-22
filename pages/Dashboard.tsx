@@ -62,7 +62,7 @@ export const Dashboard: React.FC = () => {
           // Get latest file for cover
           const { data: files, error: filesError } = await supabase
             .from('files')
-            .select('file_url, file_type')
+            .select('file_url, file_type, thumbnail_url')
             .eq('gallery_id', gallery.id)
             .order('created_at', { ascending: false })
             .limit(1);
@@ -72,8 +72,8 @@ export const Dashboard: React.FC = () => {
           return {
             ...gallery,
             itemCount: count || 0,
-            coverUrl: files && files.length > 0 ? files[0].file_url : null,
-            coverType: files && files.length > 0 ? files[0].file_type : null,
+            coverUrl: files && files.length > 0 ? (files[0].thumbnail_url || files[0].file_url) : null,
+            coverType: files && files.length > 0 && (files[0].file_type === 'video' || (files[0].file_url && files[0].file_url.match(/\.(mp4|mov|webm|ogg)$/i))) ? 'video' : 'image',
           };
         })
       );
