@@ -179,12 +179,27 @@ export const GalleryManager: React.FC = () => {
     return newFiles;
   };
 
+  const checkFileSizeLimit = (files: File[]) => {
+    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    const MAX_SIZE_BYTES = 3 * 1024 * 1024 * 1024; // 3GB
+    if (totalSize > MAX_SIZE_BYTES) {
+        alert("The total size of the selected files exceeds the 3GB limit. Please upload fewer or smaller files.");
+        return false;
+    }
+    return true;
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
     if (!fileList || fileList.length === 0 || !gallery) return;
 
     const filesToUpload = filterDuplicateFiles(fileList);
     if (filesToUpload.length === 0) {
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        return;
+    }
+    
+    if (!checkFileSizeLimit(filesToUpload)) {
         if (fileInputRef.current) fileInputRef.current.value = '';
         return;
     }
@@ -216,6 +231,11 @@ export const GalleryManager: React.FC = () => {
 
     const filesToUpload = filterDuplicateFiles(fileList);
     if (filesToUpload.length === 0) {
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        return;
+    }
+    
+    if (!checkFileSizeLimit(filesToUpload)) {
         if (fileInputRef.current) fileInputRef.current.value = '';
         return;
     }

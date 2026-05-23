@@ -64,12 +64,12 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return;
     }
 
-    // Validate total upload size (Max 5GB)
-    const MAX_TOTAL_SIZE = 5 * 1024 * 1024 * 1024; // 5GB in bytes
+    // Validate total upload size (Max 3GB)
+    const MAX_TOTAL_SIZE = 3 * 1024 * 1024 * 1024; // 3GB in bytes
     const totalSize = filesToUpload.reduce((acc, f) => acc + f.size, 0);
     
     if (totalSize > MAX_TOTAL_SIZE) {
-        alert(`Upload Cancelled.\n\nThe total size of the files selected (${(totalSize / (1024 * 1024 * 1024)).toFixed(2)} GB) exceeds the 5GB limit.\n\nPlease select fewer files or compress them before uploading.`);
+        alert(`Upload Cancelled.\n\nThe total size of the files selected (${(totalSize / (1024 * 1024 * 1024)).toFixed(2)} GB) exceeds the 3GB limit.\n\nPlease select fewer files or compress them before uploading.`);
         return;
     }
 
